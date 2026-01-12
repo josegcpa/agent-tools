@@ -36,7 +36,7 @@ export OLLAMA_IMAGE_INTERPRETATION_MODEL="gemma3:4b"
 Some tools save files under:
 
 ```bash
-export DOWNLOAD_DIR = "./data/downloads"
+export DOWNLOAD_DIR="./data/downloads"
 ```
 
 ## Available tools
