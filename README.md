@@ -1,8 +1,6 @@
-# helpful_tools
+# `bot_does_things`
 
-A small collection of Python functions intended to be used as tools for LangChain/LangGraph agents. The focus of this package is on tools which can be run locally - all functionalities relating to running models locally (i.e. image interpretation) are set up to require a local LLM server like Ollama, but this can be altered to use other OpenAI API-compatible providers.
-
-The tools live in `src/helpful_tools/tools.py`.
+A collection of useful Python functions that can be used as tools for LangChain/LangGraph agents. The focus of this package is on tools which can be run locally - all functionalities relating to running models locally (i.e. image interpretation) are set up to require a local LLM server like Ollama, but this can be altered to use other OpenAI API-compatible providers.
 
 ## Installation
 
@@ -41,14 +39,14 @@ Some tools save files under:
 
 ## Available tools
 
-All tools are plain Python callables and can be imported from `helpful_tools.tools`.
+All tools are plain Python callables and can be imported from `bot_does_things.tools`.
 
 ### `read_file(file_path: str) -> str`
 
 Reads a text file.
 
 ```python
-from helpful_tools.tools import read_file
+from bot_does_things.tools import read_file
 
 text = read_file("./notes.txt")
 ```
@@ -66,7 +64,7 @@ Supported formats:
 - `.parquet`
 
 ```python
-from helpful_tools.tools import read_table
+from bot_does_things.tools import read_table
 
 print(read_table("./data.csv"))
 ```
@@ -76,7 +74,7 @@ print(read_table("./data.csv"))
 Performs a web search (Serper/Google) and returns the standard Serper `organic` results list.
 
 ```python
-from helpful_tools.tools import web_search
+from bot_does_things.tools import web_search
 
 results = web_search("Atalanta 41 0335-0347 pdf", max_results=5)
 for r in results:
@@ -92,7 +90,7 @@ Fetches a webpage and converts it.
 - If `only_text=False`, returns Markdown and downloads images into `DOWNLOAD_DIR`, rewriting image URLs to local paths.
 
 ```python
-from helpful_tools.tools import retrieve_webpage
+from bot_does_things.tools import retrieve_webpage
 
 text = retrieve_webpage("https://www.wikipedia.org/", only_text=True)
 md = retrieve_webpage("https://www.wikipedia.org/", only_text=False)
@@ -103,7 +101,7 @@ md = retrieve_webpage("https://www.wikipedia.org/", only_text=False)
 Downloads a PDF from a URL into `DOWNLOAD_DIR` and returns extracted text.
 
 ```python
-from helpful_tools.tools import download_and_read_pdf
+from bot_does_things.tools import download_and_read_pdf
 
 txt = download_and_read_pdf("https://www.zobodat.at/pdf/Atalanta_41_0335-0347.pdf")
 ```
@@ -113,7 +111,7 @@ txt = download_and_read_pdf("https://www.zobodat.at/pdf/Atalanta_41_0335-0347.pd
 Loads a local PDF and returns extracted text (via `PyPDFLoader`).
 
 ```python
-from helpful_tools.tools import load_pdf
+from bot_does_things.tools import load_pdf
 
 txt = load_pdf("./data/downloads/paper.pdf")
 ```
@@ -123,14 +121,14 @@ txt = load_pdf("./data/downloads/paper.pdf")
 Sends an image + prompt to an OpenAI-compatible vision model (defaults to Ollama) and returns the model response.
 
 ```python
-from helpful_tools.tools import interpret_image
+from bot_does_things.tools import interpret_image
 
 answer = interpret_image("./image.png", "What is shown in this image?")
 ```
 
 ## Quick sanity check
 
-`helpful_tools.tools` contains a minimal `__main__` runner that calls each tool once.
+`bot_does_things.tools` contains a minimal `__main__` runner that calls each tool once.
 
 ```bash
-uv run python -m helpful_tools.tools
+uv run python -m bot_does_things.tools
