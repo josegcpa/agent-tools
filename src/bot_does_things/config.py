@@ -16,4 +16,8 @@ DOWNLOAD_DIR = "./data/downloads"
 SERPPER_API_KEY = os.environ.get("SERPER_API_KEY", None)
 LOGGING_LEVEL = os.environ.get("LOGGING_LEVEL", "INFO")
 CACHE_DIR = "./data/cache"
-RETURN_EXCEPTION_AS_STR = bool(os.environ.get("RETURN_EXCEPTION_AS_STR", False))
+RETURN_EXCEPTION_AS_STR = os.environ.get("RETURN_EXCEPTION_AS_STR", "False")
+if RETURN_EXCEPTION_AS_STR.lower() in ["true", "1", "yes", "on"]:
+    RETURN_EXCEPTION_AS_STR = True
+else:
+    RETURN_EXCEPTION_AS_STR = False
