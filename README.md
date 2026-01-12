@@ -12,6 +12,14 @@ uv sync
 
 ## Configuration
 
+### Error handling within agentic workflows
+
+Depending on the agent framework, errors are handled differently. If your framework is expecting exceptions to be returned as strings for LLM interpretation, you can set the `RETURN_EXCEPTION_AS_STR` environment variable to `true`. The default is `false`.
+
+```bash
+export RETURN_EXCEPTION_AS_STR="true"
+```
+
 ### Serper (web search)
 
 `web_search()` uses Serper via LangChain’s `GoogleSerperAPIWrapper`. Requires setting the `SERPER_API_KEY` environment variable.
@@ -204,3 +212,4 @@ num = generate_random_float(0.0, 1.0)
 
 ```bash
 uv run python -m bot_does_things.tools
+```
