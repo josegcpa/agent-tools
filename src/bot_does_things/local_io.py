@@ -212,9 +212,30 @@ def search_files(
     content_query: str | None = None,
     max_matches: int = 100,
     ignore_case: bool = True,
-    max_file_size_bytes: int = 1_000_000,
+    max_file_size_bytes: int = 1000000,
     exclude_dirs: list[str] | None = None,
 ) -> list[str] | str:
+    """
+    Search for files in a directory based on file name pattern and optionally
+    content.
+
+    Args:
+        directory (str): The directory to search in.
+        file_regex (str): The regular expression to match file names.
+        content_query (str | None, optional): The content to search for in the
+            files. Defaults to None.
+        max_matches (int): The maximum number of matches to return. Defaults
+            to 100.
+        ignore_case (bool): Whether to ignore case when searching for content.
+            Defaults to True.
+        max_file_size_bytes (int): The maximum file size in bytes to search.
+            Defaults to 1000000.
+        exclude_dirs (list[str] | None): The directories to exclude from the
+            search. Defaults to None.
+
+    Returns:
+        list[str] | str: The list of matching file paths or a string with the results.
+    """
     assert_non_empty_str(directory, "directory")
     assert_non_empty_str(file_regex, "file_regex")
     if content_query is not None:
@@ -280,6 +301,15 @@ def search_files(
 
 
 def load_pdf(file_path: str) -> str:
+    """
+    Load a PDF file and return its text content.
+
+    Args:
+        file_path (str): The path to the PDF file.
+
+    Returns:
+        str: The text content of the PDF file.
+    """
     assert_non_empty_str(file_path, "file_path")
     if not file_path.lower().endswith(".pdf"):
         raise ValueError("file_path must point to a .pdf file")
