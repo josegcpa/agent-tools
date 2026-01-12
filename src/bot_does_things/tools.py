@@ -19,13 +19,11 @@ from bot_does_things.local_io import (
     write_file,
 )
 from bot_does_things.web_tools import (
-    download_and_read_pdf,
     download_file,
     extract_main_content,
     fetch_url,
     retrieve_webpage,
     search_web,
-    web_search,
 )
 from bot_does_things.image_tools import interpret_image, ocr_image
 from bot_does_things.general_tools import now, cache_get, cache_set
@@ -68,12 +66,10 @@ TOOLS = {
     "now": now,
     "cache_get": cache_get,
     "cache_set": cache_set,
-    "web_search": web_search,
     "search_web": search_web,
     "fetch_url": fetch_url,
     "extract_main_content": extract_main_content,
     "retrieve_webpage": retrieve_webpage,
-    "download_and_read_pdf": download_and_read_pdf,
     "read_file_range": read_file_range,
 }
 
@@ -141,7 +137,6 @@ if __name__ == "__main__":
         "now": [],
         "cache_set": ["k", "v", 60],
         "cache_get": ["k"],
-        "web_search": ["Example Domain"],
         "search_web": ["Example Domain"],
         "fetch_url": ["https://www.wikipedia.org/"],
         "extract_main_content": [
@@ -149,9 +144,6 @@ if __name__ == "__main__":
         ],
         "retrieve_webpage": ["https://www.wikipedia.org/"],
         "interpret_image": (str(sample_png), "What is in this image?"),
-        "download_and_read_pdf": [
-            "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-        ],
     }
 
     for name, fn in TOOLS.items():

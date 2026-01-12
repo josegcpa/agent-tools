@@ -12,7 +12,17 @@ from .assertions import assert_int_ge, assert_non_empty_str, raise_for_status
 from .config import DOWNLOAD_DIR, SERPPER_API_KEY, USER_AGENT
 
 
-def web_search(query: str, max_results: int = 10) -> list[dict]:
+def _web_search(query: str, max_results: int = 10) -> list[dict]:
+    """
+    Search the web using Serper API.
+
+    Args:
+        query (str): The search query.
+        max_results (int): The maximum number of results to return. Defaults to 10.
+
+    Returns:
+        list[dict]: The search results.
+    """
     assert_non_empty_str(query, "query")
     assert_int_ge(max_results, "max_results", 1)
     if not SERPPER_API_KEY:
@@ -33,6 +43,20 @@ def search_web(
     intitle: str | None = None,
     inurl: str | None = None,
 ) -> list[dict]:
+    """
+    Search the web using Serper API with optional filters.
+
+    Args:
+        query (str): The search query.
+        max_results (int): The maximum number of results to return. Defaults to 10.
+        site (str | None): The site to search in. Defaults to None.
+        filetype (str | None): The file type to search for. Defaults to None.
+        intitle (str | None): The title to search for. Defaults to None.
+        inurl (str | None): The URL to search for. Defaults to None.
+
+    Returns:
+        list[dict]: The search results.
+    """
     assert_non_empty_str(query, "query")
 
     q = query
@@ -44,7 +68,7 @@ def search_web(
         q = f"intitle:{intitle} {q}"
     if inurl:
         q = f"inurl:{inurl} {q}"
-    return web_search(q, max_results=max_results)
+    return _web_search(q, max_results=max_results)
 
 
 def download_file(
@@ -54,6 +78,19 @@ def download_file(
     overwrite: bool = False,
     timeout: int = 60,
 ) -> str:
+    """
+    Download a file from a URL and save it to a local directory.
+
+    Args:
+        url (str): The URL to download from.
+        dest_dir (str): The directory to save the file to. Defaults to DOWNLOAD_DIR.
+        filename (str | None): The name to save the file as. Defaults to None.
+        overwrite (bool): Whether to overwrite an existing file. Defaults to False.
+        timeout (int): The timeout for the request. Defaults to 60.
+
+    Returns:
+        str: The path to the downloaded file.
+    """
     assert_non_empty_str(url, "url")
     assert_non_empty_str(dest_dir, "dest_dir")
     assert_int_ge(timeout, "timeout", 1)
@@ -107,56 +144,26 @@ def download_file(
     return str(dest)
 
 
-def download_and_read_pdf(pdf_url: str) -> str:
-    from .local_io import load_pdf
-
-    assert_non_empty_str(pdf_url, "pdf_url")
-
-    out_dir = Path(DOWNLOAD_DIR)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    parsed = urllib.parse.urlparse(pdf_url)
-    filename = Path(parsed.path).name
-    if not filename:
-        digest = hashlib.sha256(pdf_url.encode("utf-8")).hexdigest()[:16]
-        filename = f"download_{digest}.pdf"
-    if not filename.lower().endswith(".pdf"):
-        filename = f"{filename}.pdf"
-    dest = out_dir / filename
-
-    try:
-        resp = requests.get(
-            pdf_url,
-            headers={"User-Agent": USER_AGENT},
-            timeout=120,
-            stream=True,
-        )
-    except requests.RequestException as e:
-        raise RuntimeError(f"Error downloading URL {pdf_url}: {e}") from e
-    raise_for_status(resp)
-
-    content_type = resp.headers.get("Content-Type", "")
-    if "pdf" not in content_type.lower() and not pdf_url.lower().endswith(
-        ".pdf"
-    ):
-        raise RuntimeError(
-            f"URL did not look like a PDF (Content-Type={content_type}): {pdf_url}"
-        )
-
-    with dest.open("wb") as f:
-        for chunk in resp.iter_content(chunk_size=1024 * 64):
-            if chunk:
-                f.write(chunk)
-
-    return load_pdf(str(dest))
-
-
 def fetch_url(
     url: str,
     timeout: int = 60,
     max_chars: int | None = None,
     headers: dict[str, str] | None = None,
 ) -> dict:
+    """
+    Retrieves the content of a URL.
+
+    Args:
+        url (str): The URL to retrieve.
+        timeout (int): The timeout for the request. Defaults to 60.
+        max_chars (int | None): The maximum number of characters to return.
+            Defaults to None.
+        headers (dict[str, str] | None): The headers to send with the request.
+            Defaults to None.
+
+    Returns:
+        dict: The content of the URL.
+    """
     assert_non_empty_str(url, "url")
     assert_int_ge(timeout, "timeout", 1)
     if max_chars is not None:
@@ -192,6 +199,15 @@ def fetch_url(
 
 
 def extract_main_content(html: str) -> str:
+    """
+    Extracts the main content from an HTML string.
+
+    Args:
+        html (str): The HTML string to extract the main content from.
+
+    Returns:
+        str: The main content of the HTML string.
+    """
     assert_non_empty_str(html, "html")
 
     for pat in [
@@ -228,6 +244,19 @@ def extract_main_content(html: str) -> str:
 def retrieve_webpage(
     url: str, only_text: bool = True, main_content: bool = True
 ) -> str:
+    """
+    Retrieves the content of a URL and returns it as a string.
+
+    Args:
+        url (str): The URL to retrieve.
+        only_text (bool): Whether to return only the text content.
+            Defaults to True.
+        main_content (bool): Whether to return only the main content.
+            Defaults to True.
+
+    Returns:
+        str: The content of the URL.
+    """
     fetched = fetch_url(url, timeout=60)
     html = str(fetched.get("text", ""))
     if main_content:
