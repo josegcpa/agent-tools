@@ -3,7 +3,7 @@ name = "helpful_tools"
 version = "0.1.0"
 description = "A collection of helpful tools for agents"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.11"
 dependencies = [
     "ddgs>=9.10.0",
     "duckduckgo-search>=8.1.1",
