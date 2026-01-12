@@ -1,11 +1,22 @@
+import re
 import datetime
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from bot_does_things.config import CACHE_DIR
 from bot_does_things.assertions import assert_int_ge, assert_non_empty_str
 
+MATH_EXPRESSIONS = ["sin", "cos", "tan"]
+# add arc
+MATH_EXPRESSIONS.extend([f"a{x}" for x in MATH_EXPRESSIONS])
+# add hyperbolic
+MATH_EXPRESSIONS.extend([f"{x}h" for x in MATH_EXPRESSIONS])
+# add constants
+MATH_EXPRESSIONS.extend(["pi", "e", "inf"])
+# add other functions
+MATH_EXPRESSIONS.extend(["log", "exp", "sqrt", "abs"])
 
 def now() -> str:
     """
@@ -82,3 +93,28 @@ def cache_get(key: str) -> str | None:
 
     val = payload.get("value")
     return val if isinstance(val, str) else None
+
+
+def calculator(expression: str) -> int | float:
+    f"""
+    Returns the value of a mathematical expression.
+    
+    Supports the following expressions: {MATH_EXPRESSIONS}
+    
+    Args:
+        expression (str): The mathematical expression to evaluate.
+        
+    Returns:
+        int | float: The result of the mathematical expression.
+    """
+
+    all_lowercase_str = re.findall("[a-z]+", expression)
+    for char in all_lowercase_str:
+        if char not in MATH_EXPRESSIONS:
+            raise ValueError(
+                f"Expression contains character expression not in {MATH_EXPRESSIONS}: {char}"
+            )
+        else:
+            expression = expression.replace(char, f"math.{char}")
+
+    return eval(expression)
