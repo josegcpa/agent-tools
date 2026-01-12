@@ -1,0 +1,27 @@
+[project]
+name = "helpful_tools"
+version = "0.1.0"
+description = "A collection of helpful tools for agents"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "ddgs>=9.10.0",
+    "duckduckgo-search>=8.1.1",
+    "html-to-markdown>=2.20.0",
+    "langchain>=1.2.2",
+    "langchain-community>=0.4.1",
+    "langchain-openai>=1.1.7",
+    "langgraph>=1.0.5",
+    "pandas>=2.3.3",
+    "pypdf>=6.5.0",
+]
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/helpful_tools"]
