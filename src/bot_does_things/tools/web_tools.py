@@ -9,7 +9,7 @@ import urllib.parse
 from pathlib import Path
 
 import requests
-from html_to_markdown import convert, convert_with_metadata
+from html_to_markdown import convert
 from langchain_community.utilities import GoogleSerperAPIWrapper
 
 from bot_does_things.assertions import (
@@ -283,7 +283,7 @@ def retrieve_webpage(
         html = html[:400000]
 
     if only_text:
-        markdown = convert(html)
+        markdown = convert(html).content
         text = markdown
         text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", text)
         text = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)
@@ -295,7 +295,9 @@ def retrieve_webpage(
         text = re.sub(r"\n{3,}", "\n\n", text)
         return text.strip()
 
-    markdown, metadata = convert_with_metadata(html)
+    result = convert(html)
+    markdown = result.content
+    metadata = result.metadata
 
     out_dir = Path(DOWNLOAD_DIR)
     out_dir.mkdir(parents=True, exist_ok=True)
