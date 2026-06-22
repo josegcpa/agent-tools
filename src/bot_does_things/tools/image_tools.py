@@ -6,7 +6,7 @@ import base64
 import mimetypes
 import os
 
-from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 
 from bot_does_things.assertions import assert_non_empty_str, assert_file_exists
